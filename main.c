@@ -19,8 +19,8 @@ int main(void)
   while (1)
   {
   
-HAL_GPIO_TogglePin(REDDYLED_GPIO_Port, REDDYLED_Pin);
-HAL_Delay(10000);
+HAL_GPIO_TogglePin(GPIOA, GPIO_PIN_7);
+HAL_Delay(500);
     
   }
   
@@ -176,3 +176,4 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
+
