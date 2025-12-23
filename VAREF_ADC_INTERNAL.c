@@ -43,11 +43,12 @@
 
 /* Private variables ---------------------------------------------------------*/
 ADC_HandleTypeDef hadc1;
+
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-uint16_t vref;
-char msg[20];
+uint32_t vrefint;
+char data[32];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -106,18 +107,19 @@ int main(void)
     /* USER CODE END WHILE */
 HAL_ADC_Start(&hadc1);
 HAL_ADC_PollForConversion(&hadc1, 20);
-vref = HAL_ADC_GetValue(&hadc1);
-sprintf(msg, "voltage: %hu \r\n", vref);
-HAL_UART_Transmit(&huart2, (uint8_t *)msg, strlen(msg), HAL_MAX_DELAY);
-if(vref<1491)
-    {
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
-    }
+vrefint = HAL_ADC_GetValue(&hadc1);
+snprintf(data, sizeof(data), "VREFINT: %lu\r\n", vrefint);
+HAL_UART_Transmit(&huart2, (uint8_t*)data, strlen(data), 20);
+if (vrefint<1491)
+{
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, SET);
+}
 else{
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
-    }
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, RESET);
+}
+    /* USER CODE BEGIN 3 */
   }
-
+  /* USER CODE END 3 */
 }
 
 /**
@@ -202,7 +204,7 @@ static void MX_ADC1_Init(void)
   */
   sConfig.Channel = ADC_CHANNEL_VREFINT;
   sConfig.Rank = 1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_15CYCLES;
+  sConfig.SamplingTime = ADC_SAMPLETIME_3CYCLES;
   if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
   {
     Error_Handler();
